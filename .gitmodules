@@ -1,0 +1,3 @@
+[submodule "app"]
+	path = app
+	url = git@github.com:NabilHY/inception-42.git
