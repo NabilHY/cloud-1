@@ -1,51 +1,44 @@
-FROM debian:bullseye
+FROM alpine:3.22
 
-RUN apt update && \
-    DEBIAN_FRONTEND=noninteractive apt install -y \
-    curl \
-    sudo \
-    ghostscript \
-    php \
-    php-fpm \
-    php-bcmath \
-    php-curl \
-    php-imagick \
-    php-intl \
-    php-json \
-    php-mbstring \
-    php-mysql \
-    php-xml \
-    php-zip && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+ARG CACHE_BUST=1.6
 
-COPY tools/entrypoint.sh tools/entrypoint.sh
+RUN apk update && apk add --no-cache \
+curl \
+sudo \
+ghostscript \
+php83 \
+tini \
+php83-fpm \
+php83-bcmath \
+php83-curl \
+php83-pecl-imagick \
+php83-intl \
+php83-mbstring \
+php83-mysqli \
+php83-mysqlnd \
+php83-xml \
+php83-zip \
+php83-phar \
+mariadb-client \
+php-redis && \
+CONF_FILE="/etc/php83/php-fpm.d/www.conf" && \
+sed -i 's|^user = .*|user = nobody|' "$CONF_FILE" && \
+sed -i 's|^group = .*|group = nobody|' "$CONF_FILE" && \
+sed -i 's|^listen = .*|listen = 9000|' "$CONF_FILE" && \
+sed -i 's|^;*clear_env = .*|clear_env = no|' "$CONF_FILE" && \
+mkdir -p /var/www/html && \
+curl -s https://wordpress.org/latest.tar.gz | tar -xz --strip-components=1 -C /var/www/html && \
+chown -R nobody:nobody /var/www/html && \
+ln -s /usr/sbin/php-fpm83 /usr/sbin/php-fpm && \
+rm -rf /var/cache/apk/* 
 
-RUN chmod +x tools/entrypoint.sh
 
-RUN mkdir -p /var/www/html
+COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 
-RUN chmod -R 777 /var/www/html
-
-RUN curl -s https://wordpress.org/latest.tar.gz | tar -xz --strip-components=1 -C /var/www/html && \
-    chown -R nobody:nogroup /var/www/html && \
-    chmod -R 755 /var/www/html
-
-# Use dynamic PHP version path
-RUN PHP_VERSION=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;') && \
-    CONF_FILE="/etc/php/$PHP_VERSION/fpm/pool.d/www.conf" && \
-    sed -i 's|^user = .*|user = nobody|' "$CONF_FILE" && \
-    sed -i 's|^group = .*|group = nogroup|' "$CONF_FILE" && \
-    sed -i 's|^listen = .*|listen = 9000|' "$CONF_FILE" && \
-    sed -i 's|^;*clear_env = .*|clear_env = no|' "$CONF_FILE"
-
-RUN mkdir -p /run/php && chown -R nobody:nogroup /run/php
-
-RUN ln -s /usr/sbin/php-fpm7.4 /usr/sbin/php-fpm
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 WORKDIR /var/www/html
 
-ENTRYPOINT [ "/tools/entrypoint.sh" ]
-CMD ["php-fpm7.4", "-F"]
+ENTRYPOINT [ "/sbin/tini", "--", "/usr/local/bin/entrypoint.sh" ]
 
-
-
+CMD ["php-fpm", "-F"]

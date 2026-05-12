@@ -10,9 +10,7 @@ rm -rf /var/cache/apk/*
 
 COPY ./tools/custom.cnf /etc/my.cnf.d/mariadb-server.cnf
 
-
 COPY ./tools/entrypoint.sh /entrypoint.sh
-
 
 RUN chmod +x /entrypoint.sh
 

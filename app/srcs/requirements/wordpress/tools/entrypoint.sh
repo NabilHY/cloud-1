@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 
-chown -R www-data:www-data /var/www/html
+chown -R nobody:nobody /var/www/html
 
 cat > /var/www/html/wp-config.php << EOF
 <?php
@@ -35,11 +35,7 @@ mv wp-cli.phar /usr/local/bin/wp
 
 wp --info
 
-
-# Redis PHP Extension
-
-RUN apt-get update && apt-get install -y php-redis && \
-    apt clean && rm -rf /var/lib/apt/lists/*
+# # Redis PHP Extension
 
 wp core install \
   --url="${WP_SITE_URL}" \
@@ -51,7 +47,10 @@ wp core install \
   --path=/var/www/html \
   --allow-root
 
+
 wp plugin install redis-cache --activate --allow-root
+
+wp plugin activate redis-cache --allow-root
 
 wp redis enable --allow-root
 
