@@ -2,13 +2,12 @@
 set -e
 
 echo "Starting MariaDB..."
-# mariadbd-safe --socket=/run/mysqld/mysqld.sock &
 
-# Wait longer for MariaDB to initialize
-sleep 5
 
 if [ ! -d "/var/lib/mysql/mysql" ]; then
+    echo "Db Init"
     mariadb-install-db --user=mysql --datadir=/var/lib/mysql --skip-test-db
+
     mariadbd --user=mysql --bootstrap << EOF
 FLUSH PRIVILEGES;
 ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';
@@ -17,8 +16,9 @@ CREATE USER IF NOT EXISTS '$WORDPRESS_DB_USER'@'%' IDENTIFIED BY '$WORDPRESS_DB_
 GRANT ALL PRIVILEGES ON $WORDPRESS_DB_NAME.* TO '$WORDPRESS_DB_USER'@'%';
 FLUSH PRIVILEGES;
 EOF
+    echo "Database Initialized"
 fi
 
-echo "DB Injected successfully"
+echo "Starting $@"
 
-exec mariadbd --user=mysql
+exec "$@"
