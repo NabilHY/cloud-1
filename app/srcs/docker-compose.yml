@@ -1,20 +1,13 @@
 services:
-  # nginx:
-  #   container_name: nginx
-  #   build: ./requirements/nginx
-  #   image: nginx:v1.0
-  #   volumes:
-  #     - wordpress_data:/var/www/html
-  #   restart: always
-  #   ports:
-  #     - 443:443
-  #   networks:
-  #     - inception
-
   mariadb:
+    image: mariadb:v1.0
     container_name: mariadb
     build: ./requirements/mariadb
-    image: mariadb:v1.0
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${WORDPRESS_DB_USER}", "-p${WORDPRESS_DB_PASSWORD}"]
+      timeout: 5s
+      retries: 5
+      interval: 10s
     volumes:
       - mariadb_data:/var/lib/mysql
     restart: always
@@ -23,17 +16,54 @@ services:
     env_file:
       - .env
 
-  # redis:
-  #   container_name: redis
-  #   build: ./requirements/redis
-  #   image: redis:v1.0
-  #   ports:
-  #     - "6379:6379"
-  #   networks:
-  #     - inception
-  #   restart: always
-  #   volumes:
-  #     - wordpress_data:/var/www/html
+  static_site:
+    container_name: static_site
+    image: static:v1.0
+    build: ./requirements/static_site
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8081"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      - inception
+    ports:
+      - "8080:8080"
+    restart: always
+
+  redis:
+    container_name: redis
+    build: ./requirements/redis
+    image: redis:v1.0
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    ports:
+      - "6379:6379"
+    networks:
+      - inception
+    restart: always
+    volumes:
+      - wordpress_data:/var/www/html
+
+  adminer:
+    container_name: adminer
+    build: ./requirements/adminer
+    image: adminer:v1.0
+    networks:
+      - inception
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      mariadb :
+        condition: service_healthy
+    restart: always
 
   wordpress:
     container_name: wordpress
@@ -42,87 +72,129 @@ services:
     volumes:
       - wordpress_data:/var/www/html
     restart: always
-    depends_on: 
-      - mariadb
-      # - redis
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "9000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
     networks:
       - inception
     env_file:
       - .env
 
-  # adminer:
-  #   container_name: adminer
-  #   build: ./requirements/adminer
-  #   image: adminer:v1.0
-  #   networks:
-  #     - inception
-  #   depends_on:
-  #     - mariadb
-  #     - nginx
-  #   restart: always
+  ftp:
+    container_name: ftp
+    build: ./requirements/ftp
+    image: ftp:v1.0
+    depends_on:
+      nginx:  
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "21"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    volumes:
+      - wordpress_data:/home/ftpuser
+    networks:
+      - inception
+    ports:
+      - "21:21"
+      - "21000-21010:21000-21010"
+    restart: always
+    env_file:
+      - .env
 
-  # static_site:
-  #   container_name: static_site
-  #   image: static:v1.0
-  #   build: ./requirements/static_site
-  #   networks:
-  #     - inception
-  #   depends_on:
-  #     - nginx
-  #   ports:
-  #     - "8080:8080"
-  #   restart: always
+  nginx:
+    container_name: nginx
+    build: ./requirements/nginx
+    image: nginx:v1.0
+    depends_on:
+      wordpress:
+        condition: service_healthy
+      static_site: 
+        condition: service_healthy
+      adminer: 
+        condition: service_healthy
+      portainer:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "443"]
+      start_period: 1m
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    env_file:
+      - .env
+    volumes:
+      - wordpress_data:/var/www/html
+    restart: always
+    ports:
+      - 443:443
+    networks:
+      - inception
 
-  # portainer:
-  #   container_name: portainer
-  #   build: ./requirements/portainer
-  #   image: portainer:v1.0
-  #   networks:
-  #     - inception
-  #   restart: unless-stopped
-  #   ports:
-  #     - 9443:9443
-  #   volumes:
-  #     - portainer_data:/data
-  #     - /var/run/docker.sock:/var/run/docker.sock
+  portainer:
+    container_name: portainer
+    build: ./requirements/portainer
+    image: portainer:v1.0
+    networks:
+      - inception
+    depends_on:
+      wordpress:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "9443"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    restart: unless-stopped
+    ports:
+      - 9443:9443
+    volumes:
+      - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
 
-  # ftp:
-  #   container_name: ftp
-  #   build: ./requirements/ftp
-  #   image: ftp:v1.0
-  #   depends_on:
-  #     - wordpress
-  #   volumes:
-  #     - wordpress_data:/home/ftpuser
-  #   networks:
-  #     - inception
-  #   ports:
-  #     - "21:21"
-  #     - "21000-21010:21000-21010"
-  #   restart: always
-  #   env_file:
-  #     - .env
+  init-checker:
+    image: alpine:3.22
+    container_name: init-checker
+    depends_on:
+      nginx:
+        condition: service_healthy
+      ftp:
+        condition: service_healthy
+    restart: on-failure
+    command: >
+      sh -c "echo 'INFRASTRUCTURE DEPLOYED AND HEALTHY!'"
 
 volumes:
   mariadb_data:
       name: db_data
       driver_opts:
         type: none
-        device: /home/nhayoun/data/db
+        device: /home/dash/dockVol/db
         o: bind
 
   wordpress_data:
       name: wp_data
       driver_opts:
         type: none
-        device: /home/nhayoun/data/wp
+        device: /home/dash/dockVol/wp
         o: bind
 
   portainer_data:
       name: portainer_data
       driver_opts:
         type: none
-        device: /home/nhayoun/data/portainer
+        device: /home/dash/dockVol/portainer
         o: bind
 
 networks:

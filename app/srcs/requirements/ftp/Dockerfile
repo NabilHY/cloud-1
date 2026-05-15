@@ -2,7 +2,7 @@ FROM alpine:3.22
 
 ARG CACHE_BUST=1
 
-RUN apk update && apk add --no-cache vsftpd tini && rm -rf /var/cache/apk/*
+RUN apk update && apk add --no-cache vsftpd curl tini netcat-openbsd && rm -rf /var/cache/apk/*
 
 EXPOSE 21 21000-21010
 

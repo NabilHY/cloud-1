@@ -28,6 +28,6 @@ COPY tools/entrypoint.sh /tools/entrypoint.sh
 RUN chmod +x /tools/entrypoint.sh && \ 
     mkdir -p /etc/nginx/ssl
 
-ENTRYPOINT [ "/sbin/tini", "--", "/tools/entrypoint" ]
+ENTRYPOINT [ "/sbin/tini", "--", "/tools/entrypoint.sh" ]
 
-CMD ["nginx", "-g", "'daemon off;'"]
+CMD ["nginx", "-g", "daemon off;"]

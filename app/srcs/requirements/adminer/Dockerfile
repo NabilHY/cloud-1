@@ -13,4 +13,4 @@ WORKDIR /var/www/adminer
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "/var/www/adminer"]
+CMD ["php", "-d", "display_errors=Off", "-S", "0.0.0.0:8080", "-t", "/var/www/adminer"]

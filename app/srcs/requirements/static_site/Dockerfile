@@ -1,6 +1,6 @@
 FROM alpine:3.22
 
-RUN apk add --no-cache python3 tini && \
+RUN apk add --no-cache python3 tini wget && \
     rm -rf /var/cache/apk/*
 
 WORKDIR /static-site

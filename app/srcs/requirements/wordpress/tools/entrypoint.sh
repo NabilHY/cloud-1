@@ -13,8 +13,8 @@ define( 'DB_HOST', '${WORDPRESS_DB_HOST}' );
 define( 'DB_CHARSET', 'utf8' );
 define( 'DB_COLLATE', '' );
 
-define( 'WP_REDIS_HOST', 'redis');
-define('WP_REDIS_PORT', 6379);
+define( 'WP_REDIS_HOST', '${WP_REDIS_HOST}');
+define('WP_REDIS_PORT', '${WP_REDIS_PORT}');
 
 \$table_prefix = 'wp_';
 
@@ -26,6 +26,20 @@ if ( ! defined( 'ABSPATH' ) )
 	define( 'ABSPATH', __DIR__ . '/' );
 require_once ABSPATH . 'wp-settings.php';
 EOF
+
+echo "Checking Redis connectivity"
+until nc -z -w 2 redis ${WP_REDIS_PORT}; do
+  echo "Redis is not ready - sleeping ... "
+  sleep 0.5
+done
+echo "Redis is up"
+
+echo "Checking MariaDB connectivity"
+until nc -z -w 2 ${WORDPRESS_DB_HOST} ${WP_DB_PORT}; do
+  echo "Redis is not ready - sleeping ... "
+  sleep 0.5
+done
+echo "MariaDB is up"
 
 curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar >/dev/null 2>&1
 
@@ -46,7 +60,6 @@ wp core install \
   --skip-email \
   --path=/var/www/html \
   --allow-root
-
 
 wp plugin install redis-cache --activate --allow-root
 
