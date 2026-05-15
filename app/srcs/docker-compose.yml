@@ -28,7 +28,7 @@ services:
     networks:
       - inception
     ports:
-      - "8080:8080"
+      - "8081:8081"
     restart: always
 
   redis:
@@ -171,7 +171,7 @@ services:
         condition: service_healthy
       ftp:
         condition: service_healthy
-    restart: on-failure
+    restart: on-always
     command: >
       sh -c "echo 'INFRASTRUCTURE DEPLOYED AND HEALTHY!'"
 
