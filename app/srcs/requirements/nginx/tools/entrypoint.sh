@@ -1,8 +1,20 @@
 #!/bin/sh
 
-set -e
-
 mkdir -p /etc/nginx/ssl
+
+get_secret() {
+    local var_name="$1"
+    local secret_name="$2"
+    local file_path="/run/secrets/$secret_name"
+
+    if [ -f "$file_path" ]; then
+        export var_name=$(cat "$file_path")
+    else
+        exit 1
+    fi
+}
+
+get_secret "DOMAIN_NAME" "domain_name"
 
 if [ ! -f /etc/nginx/ssl/nginx.crt ]; then
     echo "🔐 Generating SSL certificate for $DOMAIN_NAME..."
