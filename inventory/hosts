@@ -1,0 +1,4 @@
+[ansible_target]
+ansible-vm
+[ec2_instance]
+ec2-vm

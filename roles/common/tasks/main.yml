@@ -1,0 +1,11 @@
+- name: Install tree
+  apt:
+      name: tree
+      state: present
+      update_cache: yes
+
+- name: Install curl
+  apt:
+    name: curl
+    state: present
+    update_cache: yes
