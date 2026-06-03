@@ -1,4 +1,4 @@
 - hosts: ansible_target:ec2_instance
   become: yes
   roles:
-    - common
+    - docker
