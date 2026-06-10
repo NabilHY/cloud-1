@@ -57,3 +57,20 @@
       - docker-compose-plugin
     state: present
     update_cache: yes
+
+- name: Ensure docker group exists
+  ansible.builtin.user:
+      name: "{{ target_user }}"
+      groups: docker
+      append: true
+
+
+- name: Reset connection to apply group changes
+  ansible.builtin.meta: reset_connection
+
+- name: Verify Docker works with no sudo
+  ansible.builtin.command: docker ps
+  become: false
+
+
+

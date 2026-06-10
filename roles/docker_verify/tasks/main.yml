@@ -1,0 +1,35 @@
+- name: 1. Check if Docker service is running
+  ansible.builtin.systemd:
+    name: docker
+  register: docker_service_status
+
+- name: Report Docker service is running
+  ansible.builtin.debug:
+    msg: "Docker service is {{ docker_service_status.status.ActiveState }} ({{ docker_service_status.status.SubState }})"
+
+- name: 2. Check Docker CLI Version
+  ansible.builtin.command: docker --version
+  register: docker_version_output
+  changed_when: false
+
+- name: Report Docker Version
+  ansible.builtin.debug:
+    msg: "Docker service is {{ docker_service_status.status.ActiveState }} ({{ docker_service_status.status.SubState }})"
+    
+- name: 3. Test operational container execution
+  community.docker.docker_container:
+    name: build_test
+    image: hello-world
+    state: started
+  register: container_test
+
+- name: Report Container Test Success
+  ansible.builtin.debug:
+    msg: "Docker is fully operational! Test container executed successfully"
+  when: container_test.container.State.ExitCode == 0
+
+- name: 4. Clean up test container
+  community.docker.docker_container:
+      name: ansible_docker_test
+      state: absent
+

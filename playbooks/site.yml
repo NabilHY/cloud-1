@@ -1,4 +1,6 @@
-- hosts: ansible_target:ec2_instance
+- hosts: ansible_target
   become: yes
   roles:
-    - docker
+    - docker_install
+    - docker_verify
+    - mariadb
