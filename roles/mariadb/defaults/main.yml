@@ -1,6 +1,0 @@
-mariadb_build_dir: /tmp/mariadb
-mariadb_container_name: mymariadb
-mariadb_image: mymariadb 
-mariadb_image_tag: 1.0
-mariadb_host_port: 3306
-mariadb_container_port: 3306

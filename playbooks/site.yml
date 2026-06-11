@@ -1,6 +1,7 @@
 - hosts: ansible_target
   become: yes
   roles:
+    - infra
     - docker_install
     - docker_verify
-    - mariadb
+    - compose

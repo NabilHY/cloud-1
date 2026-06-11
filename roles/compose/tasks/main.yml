@@ -1,0 +1,43 @@
+- name: Create application directory
+  ansible.builtin.file:
+    path: "{{ build_dir }}"
+    state: directory
+    mode: "0700"
+
+- name: Create the docker network
+  community.docker.docker_network:
+    name: "{{ network_name }}"
+    driver: bridge
+    state: present
+
+- name: Create MariaDB Directory
+  ansible.builtin.file:
+    path: "{{ target_mariadb_path }}"
+    mode: '0755'
+    state: directory
+
+- name: Copy MariaDB Dependencies
+  ansible.builtin.copy:
+    src: "{{ controller_mariadb_path }}/{{ item }}"
+    dest: "{{ target_mariadb_path }}/{{ item }}"
+    mode: "0644"
+  loop:
+      - custom.cnf
+      - Dockerfile
+      - entrypoint.sh
+
+- name: Template the docker-compose file to the target
+  ansible.builtin.template:
+    src: "{{ compose_path }}"
+    dest: "{{ build_dir }}/docker-compose.yml"
+    mode: "0640"
+
+- name: Deploy the application via docker compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ build_dir }}"
+    state: present
+  register: result
+
+#- name: show status
+ # ansible.builtin.debug:
+  #  var: result

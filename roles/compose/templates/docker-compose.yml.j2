@@ -1,0 +1,22 @@
+services:
+  {{ mariadb_container_name }}:
+    container_name: {{ mariadb_container_name }}
+    build: {{ target_mariadb_path}}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "{{ wp_db_name }}", -p"{{ wp_db_pass }}"]
+      timeout: 5s
+      retries: 5
+      interval: 1m
+    #volumes:
+     # - mariadb_data:/var/lib/mysql
+    restart: always
+    environment:
+        MYSQL_ROOT_PASSWORD: "{{ wp_db_pass }}"	
+        WORDPRESS_DB_NAME: "{{ wp_db_name }}"	
+        WORDPRESS_DB_USER: "{{ wp_db_name }}"	
+        WORDPRESS_DB_PASSWORD: "{{ wp_db_pass }}"
+    networks: 
+       - "{{ network_name }}"
+
+networks:
+  "{{ network_name }}":

@@ -10,7 +10,7 @@ RUN apk update && \
 
 COPY custom.cnf /etc/my.cnf.d/mariadb-server.cnf
 
-COPY entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
 

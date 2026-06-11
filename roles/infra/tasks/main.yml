@@ -1,0 +1,9 @@
+- name: Configure persistent DNS via systemd-resolved
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '^#?DNS='
+    line: 'DNS=8.8.8.8 1.1.1.1'
+  notify: Restart systemd-resolved
+
+- name: Apply DNS settings settings immediately
+  ansible.builtin.meta: flush_handlers
