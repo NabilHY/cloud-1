@@ -1,0 +1,12 @@
+- name: Create application directory
+  ansible.builtin.file:
+    path: "{{ build_dir }}"
+    state: directory
+    mode: "0700"
+
+- name: Create the docker network
+  community.docker.docker_network:
+    name: "{{ network_name }}"
+    driver: bridge
+    state: present
+

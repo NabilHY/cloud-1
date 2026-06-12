@@ -1,0 +1,12 @@
+- name: Template the docker-compose file to the target
+  ansible.builtin.template:
+    src: "{{ compose_path }}"
+    dest: "{{ build_dir }}/docker-compose.yml"
+    mode: "0640"
+
+- name: Deploy the application via docker compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ build_dir }}"
+    state: present
+  register: result
+

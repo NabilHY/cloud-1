@@ -1,4 +1,4 @@
-- hosts: ansible_target
+- hosts: ansible-vm
   become: yes
   roles:
     - infra

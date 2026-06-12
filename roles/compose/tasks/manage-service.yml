@@ -1,0 +1,15 @@
+- name: "Create {{ service.name }} Directory"
+  ansible.builtin.file:
+    path: "{{ service.target_path }}"
+    mode: '0755'
+    state: directory
+
+- name: Copy MariaDB Dependencies
+  ansible.builtin.copy:
+    src: "{{ service.src_path }}/{{ file }}"
+    dest: "{{ service.target_path }}/{{ file }}"
+    mode: "0644"
+  loop: "{{ service.files }}"
+  loop_control:
+    loop_var: file
+

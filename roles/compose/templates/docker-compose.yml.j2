@@ -1,6 +1,6 @@
 services:
-  {{ mariadb_container_name }}:
-    container_name: {{ mariadb_container_name }}
+  {{ mariadb_container }}:
+    container_name: {{ mariadb_container }}
     build: {{ target_mariadb_path}}
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "{{ wp_db_name }}", -p"{{ wp_db_pass }}"]
