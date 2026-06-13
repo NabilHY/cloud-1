@@ -15,6 +15,6 @@ COPY entrypoint.sh entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # pid-1 to be managed by tini init wrapper
-ENTRYPOINT ["/sbin/tini", "--", "entrypoint.sh"]
+ENTRYPOINT ["/sbin/tini", "--", "/entrypoint.sh"]
 
 CMD ["mariadbd", "--user=mysql", "--console"]

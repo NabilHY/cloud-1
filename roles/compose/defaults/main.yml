@@ -17,6 +17,8 @@ wp_db_name: wp-db
 wp_db_pass: wp-pass
 wp_admin_user: wp-user
 
+mariadb_volume: mariadb_data
+
 app_services:
   - name: "{{ mariadb_container }}"
     target_path: "{{ build_dir }}/{{ mariadb_container }}"
@@ -25,4 +27,3 @@ app_services:
       - custom.cnf
       - Dockerfile
       - entrypoint.sh
-

@@ -1,22 +1,39 @@
 services:
   {{ mariadb_container }}:
     container_name: {{ mariadb_container }}
-    build: {{ target_mariadb_path}}
+    build: {{ target_mariadb_path }}
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "{{ wp_db_name }}", -p"{{ wp_db_pass }}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", {{ wp_db_name }}, -p{{ wp_db_pass }}]
       timeout: 5s
       retries: 5
-      interval: 1m
-    #volumes:
-     # - mariadb_data:/var/lib/mysql
+      interval: 10s
+    volumes:
+      - {{ mariadb_volume }}:/var/lib/mysql
     restart: always
     environment:
-        MYSQL_ROOT_PASSWORD: "{{ wp_db_pass }}"	
-        WORDPRESS_DB_NAME: "{{ wp_db_name }}"	
-        WORDPRESS_DB_USER: "{{ wp_db_name }}"	
-        WORDPRESS_DB_PASSWORD: "{{ wp_db_pass }}"
+        MYSQL_ROOT_PASSWORD: {{ wp_db_pass }}	
+        WORDPRESS_DB_NAME: {{ wp_db_name }}	
+        WORDPRESS_DB_USER: {{ wp_db_name }}	
+        WORDPRESS_DB_PASSWORD: {{ wp_db_pass }}
     networks: 
-       - "{{ network_name }}"
+       - {{ network_name }}
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin
+    restart: always
+    depends_on:
+      {{mariadb_container}}:
+        condition: service_healthy
+    environment:
+      PMA_HOST: {{ mariadb_container }}
+    ports:
+      - "8080:80"
+    networks:
+      - {{ network_name }}
+
+volumes:
+  {{ mariadb_volume }}:
 
 networks:
-  "{{ network_name }}":
+  {{ network_name }}:
