@@ -18,12 +18,18 @@ services:
     networks: 
        - {{ network_name }}
 
-  phpmyadmin:
-    container_name: phpmyadmin
-    image: phpmyadmin
+  {{ phpmyadmin_container }}:
+    container_name: {{ phpmyadmin_container }}
+    image: {{ phpmyadmin_container }}
     restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost/index.php || exit 1 " ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     depends_on:
-      {{mariadb_container}}:
+      {{ mariadb_container }}:
         condition: service_healthy
     environment:
       PMA_HOST: {{ mariadb_container }}
@@ -32,8 +38,34 @@ services:
     networks:
       - {{ network_name }}
 
+  {{ wordpress_container }}:
+    container_name: {{ wordpress_container }}
+    build: {{ build_dir }}/{{ wordpress_container }}
+    restart: always
+    depends_on:
+      {{ phpmyadmin_container }}:
+          condition: service_healthy
+    volumes:
+      - {{ mariadb_volume }}:/var/lib/mysql
+      - {{ wordpress_volume }}:/var/www/html
+    environment:
+      WORDPRESS_DB_NAME: {{ wp_db_name }}
+      WORDPRESS_DB_USER: {{ wp_db_name }}
+      WORDPRESS_DB_PASSWORD: {{ wp_db_pass }}
+      WORDPRESS_DB_HOST: {{ mariadb_container }}
+#     WP_REDIS_PORT: "wp_redis_port"
+      WP_DB_PORT: {{ mariadb_container_port }}
+      WP_SITE_URL: "wp_site_url"
+      WP_SITE_TITLE: "wp_site_title"
+      WP_ADMIN_USER: "wp_admin_user"
+      WP_ADMIN_PASSWORD: "wp_admin_pass"
+      WP_ADMIN_EMAIL: "wp_admin_email"
+    networks:
+      - {{ network_name }}
+
 volumes:
   {{ mariadb_volume }}:
+  {{ wordpress_volume }}:
 
 networks:
   {{ network_name }}:

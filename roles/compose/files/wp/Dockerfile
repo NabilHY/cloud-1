@@ -33,12 +33,12 @@ RUN apk update && apk add --no-cache \
     ln -s /usr/sbin/php-fpm83 /usr/sbin/php-fpm && \
     rm -rf /var/cache/apk/* 
 
-COPY entrypoint.sh /opt/compose/wp/entrypoint.sh
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
-RUN chmod +x /opt/compose/wp
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 WORKDIR /var/www/html
 
-ENTRYPOINT [ "/sbin/tini", "--", "/opt/compose/wp/entrypoint.sh" ]
+ENTRYPOINT [ "/sbin/tini", "--", "/usr/local/bin/entrypoint.sh" ]
 
 CMD ["php-fpm", "-F"]

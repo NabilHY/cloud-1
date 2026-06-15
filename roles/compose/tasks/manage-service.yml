@@ -4,7 +4,7 @@
     mode: '0755'
     state: directory
 
-- name: Copy MariaDB Dependencies
+- name: "Copy {{ service.name }} Dependencies"
   ansible.builtin.copy:
     src: "{{ service.src_path }}/{{ file }}"
     dest: "{{ service.target_path }}/{{ file }}"

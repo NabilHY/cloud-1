@@ -1,30 +1,30 @@
 #!/bin/sh
 
-get_secret() {
-    local var_name="$1"
-    local secret_name="$2"
-    local file_path="/run/secrets/$secret_name"
+#get_secret() {
+#    local var_name="$1"
+#    local secret_name="$2"
+ #   local file_path="/run/secrets/$secret_name"
 
-    if [ -f "$file_path" ]; then
-        export "$var_name"=$(cat "$file_path")
-        echo "LOG: Loaded $var_name from /run/secrets/$secret_name"
-    else
-        echo "FATAL: Missing secret file at $file_path"
-        exit 1
-    fi
-}
+  #  if [ -f "$file_path" ]; then
+   #     export "$var_name"=$(cat "$file_path")
+   #     echo "LOG: Loaded $var_name from /run/secrets/$secret_name"
+ #   else
+  #      echo "FATAL: Missing secret file at $file_path"
+   #     exit 1
+   # fi
+#}
 
-get_secret "WORDPRESS_DB_NAME" "db_name"
-get_secret "WORDPRESS_DB_USER" "wp_user_name"
-get_secret "WORDPRESS_DB_PASSWORD" "wp_db_pass"
-get_secret "WORDPRESS_DB_HOST" "db_host"
-get_secret "WP_REDIS_PORT" "wp_redis_port"
-get_secret "WP_DB_PORT" "db_port"
-get_secret "WP_SITE_URL" "wp_site_url"
-get_secret "WP_SITE_TITLE" "wp_site_title"
-get_secret "WP_ADMIN_USER" "wp_admin_user"
-get_secret "WP_ADMIN_PASSWORD" "wp_admin_pass"
-get_secret "WP_ADMIN_EMAIL" "wp_admin_email"
+#get_secret "WORDPRESS_DB_NAME" "db_name"
+#get_secret "WORDPRESS_DB_USER" "wp_user_name"
+#get_secret "WORDPRESS_DB_PASSWORD" "wp_db_pass"
+#get_secret "WORDPRESS_DB_HOST" "db_host"
+#get_secret "WP_REDIS_PORT" "wp_redis_port"
+#get_secret "WP_DB_PORT" "db_port"
+#get_secret "WP_SITE_URL" "wp_site_url"
+#get_secret "WP_SITE_TITLE" "wp_site_title"
+#get_secret "WP_ADMIN_USER" "wp_admin_user"
+#get_secret "WP_ADMIN_PASSWORD" "wp_admin_pass"
+#get_secret "WP_ADMIN_EMAIL" "wp_admin_email"
 
 
 chown -R nobody:nobody /var/www/html
@@ -54,15 +54,15 @@ EOF
 
 #echo "Checking Redis connectivity"
 #until nc -z -w 2 redis ${WP_REDIS_PORT}; do
-  #echo "Redis is not ready - sleeping ... "
-  #sleep 0.5
+ # echo "Redis is not ready - sleeping ... "
+ # sleep 0.5
 #done
 
 #echo "Redis is up"
 
 echo "Checking MariaDB connectivity"
 until nc -z -w 2 ${WORDPRESS_DB_HOST} ${WP_DB_PORT}; do
-  echo "Redis is not ready - sleeping ... "
+  echo "MariaDB is not ready - sleeping ... "
   sleep 0.5
 done
 
