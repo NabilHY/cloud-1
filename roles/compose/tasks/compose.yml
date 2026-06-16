@@ -8,5 +8,6 @@
   community.docker.docker_compose_v2:
     project_src: "{{ build_dir }}"
     state: present
+    build: always
   register: result
 

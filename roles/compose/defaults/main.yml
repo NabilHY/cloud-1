@@ -21,6 +21,8 @@ phpmyadmin_container: phpmyadmin
 
 wordpress_container: wp
 
+nginx_container: nginx
+
 mariadb_volume: mariadb_data
 
 wordpress_volume: wordpress_data
@@ -39,3 +41,10 @@ app_services:
     files:
       - entrypoint.sh
       - Dockerfile
+  - name: nginx_container
+    files:
+      - Dockerfile
+      - entrypoint.sh
+      - nginx.conf
+    target_path: "{{ build_dir }}/{{ nginx_container }}"
+    src_path: "{{ controller_path }}/{{ nginx_container }}"
