@@ -1,7 +1,0 @@
-!Dockerfile
-
-!nginx.conf
-
-!tools/
-
-!tools/*.sh

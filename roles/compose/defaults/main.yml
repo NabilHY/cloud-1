@@ -3,6 +3,9 @@ compose_path: ../templates/docker-compose.yml.j2
 
 build_dir: /opt/compose
 target_mariadb_path: /opt/compose/mariadb
+
+target_phpmyadmin: /opt/compose/phpmyadmin
+
 network_name: wp_network
 controller_path: ../files/
 
@@ -35,12 +38,14 @@ app_services:
       - custom.cnf
       - Dockerfile
       - entrypoint.sh
+
   - name: wordpress_container
     target_path: "{{ build_dir }}/wp"
     src_path: "{{ controller_path }}/wp"
     files:
       - entrypoint.sh
       - Dockerfile
+
   - name: nginx_container
     files:
       - Dockerfile
@@ -48,3 +53,10 @@ app_services:
       - nginx.conf
     target_path: "{{ build_dir }}/{{ nginx_container }}"
     src_path: "{{ controller_path }}/{{ nginx_container }}"
+
+  - name: phpmyadmin_container
+    target_path:  "{{ build_dir }}/phpmyadmin"
+    src_path: "{{ controller_path }}/phpmyadmin"
+    files:
+      - Dockerfile
+      - init.sh

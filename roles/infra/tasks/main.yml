@@ -5,5 +5,36 @@
     line: 'DNS=8.8.8.8 1.1.1.1'
   notify: Restart systemd-resolved
 
+- name: Prefer IPv4 over IPv6 in DNS resolution (gai.conf)
+  become: yes
+  ansible.builtin.lineinfile:
+    path: /etc/gai.conf
+    regexp: '^#?\s*precedence ::ffff:0:0/96\s+100'
+    line: 'precedence ::ffff:0:0/96  100'
+    state: present
+    create: yes
+    backup: yes
+
 - name: Apply DNS settings settings immediately
   ansible.builtin.meta: flush_handlers
+
+- name: Clean up any old broken docker repo config
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/docker.list
+    state: absent
+  become: yes
+
+- name: Update apt cache and upgrade system packages
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 86400
+    upgrade: dist
+  become: yes
+
+- name: Install Required Packages
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+  become: yes
+
