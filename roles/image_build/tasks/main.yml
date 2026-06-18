@@ -1,4 +1,4 @@
-- name: Build custom Docker image from Dockerfile 
+- name: Build custom Docker image from Dockerfile
   community.docker.docker_image:
     name: "{{ image }}"
     tag: "{{ image_tag }}"
@@ -16,4 +16,3 @@
     restart_policy: always
     published_ports:
       - "{{ host_port }}:{{ container_port }}"
-      

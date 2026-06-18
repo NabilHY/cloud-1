@@ -3,7 +3,7 @@ services:
     container_name: {{ mariadb_container }}
     build: {{ target_mariadb_path }}
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", {{ wp_db_name }}, -p{{ wp_db_pass }}]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", root, -p{{ mysql_root_password }}]
       timeout: 5s
       retries: 5
       interval: 10s
@@ -11,19 +11,19 @@ services:
       - {{ mariadb_volume }}:/var/lib/mysql
     restart: always
     environment:
-        MYSQL_ROOT_PASSWORD: {{ wp_db_pass }}	
-        WORDPRESS_DB_NAME: {{ wp_db_name }}	
-        WORDPRESS_DB_USER: {{ wp_db_name }}	
+        MYSQL_ROOT_PASSWORD: {{ wp_db_pass }}
+        WORDPRESS_DB_NAME: {{ wp_db_name }}
+        WORDPRESS_DB_USER: {{ wp_db_name }}
         WORDPRESS_DB_PASSWORD: {{ wp_db_pass }}
-    networks: 
+    networks:
        - {{ network_name }}
 
   {{ phpmyadmin_container }}:
     container_name: {{ phpmyadmin_container }}
-    image: {{ phpmyadmin_container }}
+    build: {{ build_dir }}/{{ phpmyadmin_container }}
     restart: always
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost/index.php || exit 1 " ]
+      test: [ "CMD-SHELL", "curl -f http://localhost || exit 1 " ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -33,8 +33,6 @@ services:
         condition: service_healthy
     environment:
       PMA_HOST: {{ mariadb_container }}
-    ports:
-      - "8080:80"
     networks:
       - {{ network_name }}
 
@@ -43,10 +41,9 @@ services:
     build: {{ build_dir }}/{{ wordpress_container }}
     restart: always
     depends_on:
-      {{ phpmyadmin_container }}:
+      {{ mariadb_container }}:
           condition: service_healthy
     volumes:
-      - {{ mariadb_volume }}:/var/lib/mysql
       - {{ wordpress_volume }}:/var/www/html
     healthcheck:
       test: ["CMD", "nc", "-z", "127.0.0.1", "9000"]
@@ -55,16 +52,16 @@ services:
       retries: 5
       start_period: 15s
     environment:
-      WORDPRESS_DB_NAME: {{ wp_db_name }}
+      WORDPRESS_DB_NAME: {{ wp_db_name }} 
       WORDPRESS_DB_USER: {{ wp_db_name }}
       WORDPRESS_DB_PASSWORD: {{ wp_db_pass }}
       WORDPRESS_DB_HOST: {{ mariadb_container }}
       WP_DB_PORT: {{ mariadb_container_port }}
-      WP_SITE_URL: "nhayoun.42.fr"
-      WP_SITE_TITLE: "cloud-1"
-      WP_ADMIN_USER: "wp_admin_user"
-      WP_ADMIN_PASSWORD: "wp_admin_pass"
-      WP_ADMIN_EMAIL: "admin@42.fr"
+      WP_SITE_URL: {{ WP_SITE_URL }}
+      WP_SITE_TITLE: {{ WP_SITE_URL }}
+      WP_ADMIN_USER: {{ WP_ADMIN_USER }}
+      WP_ADMIN_PASSWORD: {{ WP_ADMIN_PASSWORD }}
+      WP_ADMIN_EMAIL: {{  WP_ADMIN_EMAIL  }}
     networks:
       - {{ network_name }}
 
@@ -80,10 +77,9 @@ services:
     ports:
       - "443:443"
     environment:
-      DOMAIN_NAME: "nhayoun.42.fr"
+      DOMAIN_NAME: {{ WP_SITE_URL }}
     networks:
       - {{ network_name }}
-
 
 volumes:
   {{ mariadb_volume }}:

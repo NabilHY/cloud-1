@@ -15,7 +15,7 @@
 - name: Report Docker Version
   ansible.builtin.debug:
     msg: "Docker service is {{ docker_service_status.status.ActiveState }} ({{ docker_service_status.status.SubState }})"
-    
+
 - name: 3. Test operational container execution
   community.docker.docker_container:
     name: build_test
@@ -30,6 +30,5 @@
 
 - name: 4. Clean up test container
   community.docker.docker_container:
-      name: ansible_docker_test
-      state: absent
-
+    name: build_test
+    state: absent
