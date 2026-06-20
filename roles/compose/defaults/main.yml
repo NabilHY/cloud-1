@@ -13,14 +13,8 @@ controller_path: ../files/
 
 mariadb_container: mariadb
 mariadb_image: mariadb
-mariadb_image_tag: 1.0
 mariadb_host_port: 3306
 mariadb_container_port: 3306
-
-mysql_root_password: wp-pass
-wp_db_name: wp-db
-wp_db_pass: wp-pass
-wp_admin_user: wp-user
 
 phpmyadmin_container: phpmyadmin
 wordpress_container: wp
@@ -29,11 +23,7 @@ nginx_container: nginx
 mariadb_volume: mariadb_data
 wordpress_volume: wordpress_data
 
-WP_SITE_URL: "nhayoun.42.fr"
 WP_SITE_TITLE: "cloud-1"
-WP_ADMIN_USER: "wp_admin_user"
-WP_ADMIN_PASSWORD: "wp_admin_pass"
-WP_ADMIN_EMAIL: "admin@42.fr"
 
 app_services:
   - name: "{{ mariadb_container }}"
@@ -50,12 +40,6 @@ app_services:
     files:
       - entrypoint.sh
       - Dockerfile
-    vars:
-      - WP_SITE_URL: "nhayoun.42.fr"
-      - WP_SITE_TITLE: "cloud-1"
-      - WP_ADMIN_USER: "wp_admin_user"
-      - WP_ADMIN_PASSWORD: "wp_admin_pass"
-      - WP_ADMIN_EMAIL: "admin@42.fr"
 
   - name: "{{ nginx_container }}"
     target_path: "{{ build_dir }}/{{ nginx_container }}"

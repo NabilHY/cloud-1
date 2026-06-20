@@ -3,7 +3,7 @@ services:
     container_name: {{ mariadb_container }}
     build: {{ target_mariadb_path }}
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", root, -p{{ mysql_root_password }}]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", root, -p{{ vault_mysql_root_password }}]
       timeout: 5s
       retries: 5
       interval: 10s
@@ -11,10 +11,10 @@ services:
       - {{ mariadb_volume }}:/var/lib/mysql
     restart: always
     environment:
-        MYSQL_ROOT_PASSWORD: {{ wp_db_pass }}
-        WORDPRESS_DB_NAME: {{ wp_db_name }}
-        WORDPRESS_DB_USER: {{ wp_db_name }}
-        WORDPRESS_DB_PASSWORD: {{ wp_db_pass }}
+        MYSQL_ROOT_PASSWORD: {{ vault_wp_db_pass }}
+        WORDPRESS_DB_NAME: {{ vault_wp_db_name }}
+        WORDPRESS_DB_USER: {{ vault_wp_db_name }}
+        WORDPRESS_DB_PASSWORD: {{ vault_wp_db_pass }}
     networks:
        - {{ network_name }}
 
@@ -52,16 +52,16 @@ services:
       retries: 5
       start_period: 15s
     environment:
-      WORDPRESS_DB_NAME: {{ wp_db_name }} 
-      WORDPRESS_DB_USER: {{ wp_db_name }}
-      WORDPRESS_DB_PASSWORD: {{ wp_db_pass }}
+      WORDPRESS_DB_NAME: {{ vault_wp_db_name }} 
+      WORDPRESS_DB_USER: {{ vault_wp_db_name }}
+      WORDPRESS_DB_PASSWORD: {{ vault_wp_db_pass }}
       WORDPRESS_DB_HOST: {{ mariadb_container }}
       WP_DB_PORT: {{ mariadb_container_port }}
       WP_SITE_URL: {{ WP_SITE_URL }}
       WP_SITE_TITLE: {{ WP_SITE_URL }}
-      WP_ADMIN_USER: {{ WP_ADMIN_USER }}
-      WP_ADMIN_PASSWORD: {{ WP_ADMIN_PASSWORD }}
-      WP_ADMIN_EMAIL: {{  WP_ADMIN_EMAIL  }}
+      WP_ADMIN_USER: {{ vault_WP_ADMIN_USER }}
+      WP_ADMIN_PASSWORD: {{ vault_WP_ADMIN_PASSWORD }}
+      WP_ADMIN_EMAIL: {{  vault_WP_ADMIN_EMAIL  }}
     networks:
       - {{ network_name }}
 

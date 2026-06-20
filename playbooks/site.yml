@@ -1,5 +1,6 @@
 - hosts: ansible-vm
-  become: yes
+  become: True
+
   roles:
     - infra
     - docker_install
