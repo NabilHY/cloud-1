@@ -1,4 +1,4 @@
-- hosts: ansible-vm
+- hosts: all
   become: True
 
   roles:

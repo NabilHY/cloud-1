@@ -1,4 +1,3 @@
-[ec2-target]
+[all]
 ec2-vm
-[ansible-target]
 ansible-vm
