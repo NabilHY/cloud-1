@@ -1,0 +1,24 @@
+- name: Configure ans enable UFW
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+    update_cache: yes
+
+- name: Allow OpenSSh connections
+  community.general.ufw:
+    rule: allow
+    name: OpenSSH
+
+- name: UFW - Allow HTTPS conections
+  community.general.ufw:
+    rule: allow
+    port: "443"
+    proto: tcp
+
+- name: UFW - Enable and deny by default
+  community.general.ufw:
+    state: enabled
+    default: deny
+
+- name: UFW - Reload firewall
+  ansible.builtin.command: ufw reload

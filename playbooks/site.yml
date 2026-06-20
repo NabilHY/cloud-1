@@ -1,8 +1,11 @@
-- hosts: all
+- hosts: ansible-vm
   become: True
-
+  collections:
+    - community.docker
+    - community.general
   roles:
     - infra
+    - ufw
     - docker_install
     - docker_verify
     - compose
