@@ -24,6 +24,7 @@ mariadb_volume: mariadb_data
 wordpress_volume: wordpress_data
 
 WP_SITE_TITLE: "cloud-1"
+WP_SITE_URL: nhayoun.42.fr
 
 app_services:
   - name: "{{ mariadb_container }}"
@@ -55,5 +56,3 @@ app_services:
     files:
       - Dockerfile
       - init.sh
-
-WP_SITE_URL: nhayoun.42.fr
