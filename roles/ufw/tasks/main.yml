@@ -19,6 +19,7 @@
   community.general.ufw:
     state: enabled
     default: deny
+    direction: incoming
 
 - name: UFW - Reload firewall
   ansible.builtin.command: ufw reload
