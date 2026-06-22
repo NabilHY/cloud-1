@@ -1,4 +1,4 @@
-- hosts: ec2-vm
+- hosts: all
   become: True
   collections:
     - community.docker
