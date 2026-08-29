@@ -3,10 +3,10 @@
     path: /etc/apt/keyrings
     state: directory
     mode: '0755'
-  become: yes
+  become: true
 
 - name: Download Docker official GPG KEY
-  become: yes
+  become: true
   ansible.builtin.shell: >
     curl -4 --connect-timeout 15 --max-time 60 -fsSL
     https://download.docker.com/linux/ubuntu/gpg
@@ -30,11 +30,11 @@
   ansible.builtin.apt_repository: 
     state: present
     repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_facts['distribution_release'] }} stable"
-    update_cache: yes
+    update_cache: true
   become: true
 
 - name: Install the docker packages
-  apt:
+  ansible.builtin.apt:
     name:
       - docker-ce
       - docker-ce-cli
@@ -42,7 +42,7 @@
       - docker-buildx-plugin
       - docker-compose-plugin
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: Ensure docker group exists
   ansible.builtin.user:

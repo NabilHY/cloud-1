@@ -1,0 +1,4 @@
+mariadb_container: mariadb
+phpmyadmin_container: phpmyadmin
+nginx_container: nginx
+wordpress_container: wp

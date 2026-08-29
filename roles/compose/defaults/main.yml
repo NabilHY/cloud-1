@@ -24,7 +24,7 @@ mariadb_volume: mariadb_data
 wordpress_volume: wordpress_data
 
 WP_SITE_TITLE: "cloud-1"
-WP_SITE_URL: nhayoun.42.fr
+WP_SITE_URL: nhayoun.duckdns.org
 
 app_services:
   - name: "{{ mariadb_container }}"

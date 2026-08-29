@@ -6,14 +6,14 @@
   notify: Restart systemd-resolved
 
 - name: Prefer IPv4 over IPv6 in DNS resolution (gai.conf)
-  become: yes
+  become: true
   ansible.builtin.lineinfile:
     path: /etc/gai.conf
     regexp: '^#?\s*precedence ::ffff:0:0/96\s+100'
     line: 'precedence ::ffff:0:0/96  100'
     state: present
-    create: yes
-    backup: yes
+    create: true
+    backup: true
 
 - name: Apply DNS settings settings immediately
   ansible.builtin.meta: flush_handlers
@@ -22,19 +22,34 @@
   ansible.builtin.file:
     path: /etc/apt/sources.list.d/docker.list
     state: absent
-  become: yes
+  become: true
+
+#- name: Wait until all APT/dpkg processes finish
+#  ansible.builtin.command: pgrep -f "apt|dpkg|unattended-upgrades"
+#  register: apt_lock_check
+#  until: apt_lock_check.rc != 0
+#  retries: 60
+#  delay: 10
+#  changed_when: false
+#  failed_when: false
+#  become: true
+
+- name: Kill all apt processes
+  command: killall apt apt-get
+  register: result
+  failed_when: result.rc not in [0, 1]
 
 - name: Update apt cache and upgrade system packages
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 86400
     upgrade: dist
-  become: yes
+  become: true
 
 - name: Install Required Packages
   ansible.builtin.apt:
     name:
       - ca-certificates
       - curl
-  become: yes
+  become: true
 

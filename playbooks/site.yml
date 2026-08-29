@@ -5,7 +5,8 @@
     - community.general
   roles:
     - infra
-    - ufw
+#    - ufw
     - docker_install
     - docker_verify
     - compose
+    - smoke_test

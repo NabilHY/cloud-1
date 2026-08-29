@@ -1,0 +1,33 @@
+- name: Confirm Containers are running
+  community.docker.docker_container_info:
+    name: "{{ item }}"
+  register: container_status
+  loop:
+    - "{{ mariadb_container }}"
+    - "{{ wordpress_container }}"
+    - "{{ phpmyadmin_container }}"
+    - "{{ nginx_container }}"
+
+- name: Assert each container is actually running
+  ansible.builtin.assert:
+    that:
+      - item.container.State.Status == "running"
+    fail_msg: "{{ item.container.Name }} is not running"
+    quiet: true
+  loop: "{{ container_status.results }}"
+  loop_control:
+    label: "{{ item.container.Name }}"
+
+- name: Verify WP responds over HTTPS
+  ansible.builtin.uri:
+    url: "https://localhost/"
+    validate_certs: false
+    status_code: 200
+    return_content: true
+  register: wp_check
+
+- name: Confirm WP page
+  ansible.builtin.assert:
+    that:
+      - "'wp-content' in wp_check.content or 'WordPress' in wp_check.content"
+    fail_msg: "WordPress homepage didn't return expected content"

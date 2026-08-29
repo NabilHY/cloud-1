@@ -1,3 +1,4 @@
 **/secrets/*
 /defaults
-.vault-pass
+.vault-pass1
+*.pem
