@@ -24,28 +24,6 @@
     state: absent
   become: true
 
-#- name: Wait until all APT/dpkg processes finish
-#  ansible.builtin.command: pgrep -f "apt|dpkg|unattended-upgrades"
-#  register: apt_lock_check
-#  until: apt_lock_check.rc != 0
-#  retries: 60
-#  delay: 10
-#  changed_when: false
-#  failed_when: false
-#  become: true
-
-- name: Kill all apt processes
-  command: killall apt apt-get
-  register: result
-  failed_when: result.rc not in [0, 1]
-
-- name: Update apt cache and upgrade system packages
-  ansible.builtin.apt:
-    update_cache: true
-    cache_valid_time: 86400
-    upgrade: dist
-  become: true
-
 - name: Install Required Packages
   ansible.builtin.apt:
     name:

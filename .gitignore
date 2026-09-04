@@ -1,4 +1,7 @@
 **/secrets/*
 /defaults
-.vault-pass1
+.vault-pass
 *.pem
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup

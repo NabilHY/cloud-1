@@ -1,12 +1,32 @@
-- hosts: all
+- hosts: ec2-vm
   become: True
+  gather_facts: false
   collections:
     - community.docker
     - community.general
+  pre_tasks:
+    - name: Write SSH key from Vault
+      copy:
+        content: "{{ vault_ssh_private_key }}"
+        dest: "/tmp/cloud-1.pem"
+        mode: '0600'
+      delegate_to: localhost
+      run_once: true
+      become: false
+    - name: Gather facts now
+      setup:
   roles:
     - infra
-#    - ufw
+    - ufw
     - docker_install
     - docker_verify
     - compose
     - smoke_test
+  post_tasks:
+    - name: Clean up decrypted Key
+      file:
+        path: "/tmp/cloud-1.pem"
+        state: absent
+      delegate_to: localhost
+      run_once: true
+      become: false
