@@ -57,6 +57,3 @@
 - name: Verify Docker works with no sudo
   ansible.builtin.command: docker ps
   become: false
-
-
-

@@ -2,6 +2,7 @@
 /defaults
 .vault-pass
 *.pem
+*.swp
 .terraform/
 terraform.tfstate
 terraform.tfstate.backup

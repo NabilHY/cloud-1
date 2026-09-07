@@ -1,0 +1,15 @@
+- name: EC2 provisioning (infra, firewall, Docker, deploy)
+  hosts: ec2-vm
+  become: true
+  gather_facts: true
+  collections:
+    - community.docker
+    - community.general
+  roles:
+    - infra
+    - ufw
+    - docker_install
+    - docker_verify
+    - compose
+    - smoke_test
+    - cleanup

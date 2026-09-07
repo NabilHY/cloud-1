@@ -1,0 +1,10 @@
+- name: Provision EC2 with Terraform
+  community.general.terraform:
+    project_path: "{{ playbook_dir }}/../roles/terraform/files"
+    force_init: true
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ vault_aws_access_key_id }}"
+    AWS_SECRET_ACCESS_KEY: "{{ vault_aws_secret_access_key }}"
+  delegate_to: localhost
+  run_once: true
+  become: false

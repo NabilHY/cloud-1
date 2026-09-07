@@ -1,0 +1,14 @@
+aws_banner: |
+  =======================================
+  AWS Instance Specifications
+  =======================================
+  Name Tag:          cloud-1
+  Region:            us-east-1
+  Instance Type:     t3.micro
+  AMI ID:            ami-0b6d9d3d33ba97d99
+  Key Pair:          cloud-1
+  VPC ID:            vpc-0f383d92a34d3fa17
+  Subnet ID:         subnet-03d84bdc3c69c23b1
+  Security Group ID: sg-039b04d34a24ef144
+  Elastic IP Alloc:  eipalloc-0b6b6ff268e0c25d1
+  =======================================
