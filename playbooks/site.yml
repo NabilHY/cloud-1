@@ -1,2 +1,13 @@
 - import_playbook: local.yml
+
+- name: Wait for EC2 instance to become reachable
+  hosts: ec2-vm
+  gather_facts: false
+  tasks:
+    - name: Grace period – wait for SSH to be ready
+      ansible.builtin.wait_for_connection:
+        delay: 10
+        timeout: 300
+        sleep: 5
+
 - import_playbook: ec2.yml
