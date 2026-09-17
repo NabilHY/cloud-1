@@ -2,6 +2,8 @@
 
 mkdir -p /etc/nginx/ssl
 
+sed -i "s/___DOMAIN_NAME___;/$DOMAIN_NAME/g" /etc/nginx/nginx.conf
+
 if [ ! -f /etc/nginx/ssl/nginx.crt ]; then
   echo "🔐 Generating SSL certificate for $DOMAIN_NAME..."
   openssl req -x509 -nodes -days 365 \

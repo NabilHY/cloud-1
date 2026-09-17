@@ -1,6 +1,6 @@
 - name: Clean up decrypted Key
   ansible.builtin.file:
-    path: "/tmp/cloud-1.pem"
+    path: "/tmp/ohio.pem"
     state: absent
   delegate_to: localhost
   run_once: true
