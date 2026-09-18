@@ -8,6 +8,7 @@ RUN apk update && \
   bash \
   netcat-openbsd \
   tini \
+  gettext-envsubst \
   nginx && \
   mkdir -p /etc/nginx/ssl /run/nginx /var/www/html && \
   rm -rf /var/cache/apk/*
@@ -22,12 +23,11 @@ RUN apk update && \
 # fordward singlas
 
 COPY nginx.bootstrap.conf /etc/nginx/nginx.bootstrap.conf
-
 COPY nginx.production.conf /etc/nginx/nginx.production.conf
 
 COPY entrypoint.sh /opt/compose/nginx/entrypoint.sh
 
-RUN chmod +x /opt/compose/nginx/entrypoint.sh && \ 
+RUN chmod +x /opt/compose/nginx/entrypoint.sh && \
   mkdir -p /etc/nginx/ssl
 
 ENTRYPOINT [ "/sbin/tini", "--", "/opt/compose/nginx/entrypoint.sh" ]

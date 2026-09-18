@@ -17,7 +17,6 @@
     port: "{{ item }}"
     direction: out
   loop:
-    - "53"
     - "80"
     - "443"
 

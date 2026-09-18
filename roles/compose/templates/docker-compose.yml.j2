@@ -73,12 +73,6 @@ services:
         condition: service_healthy
       {{ phpmyadmin_container }}:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "curl -kf https://localhost/ || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
     volumes:
       - {{ wordpress_volume }}:/var/www/html
       - /etc/letsencrypt:/etc/letsencrypt:ro
@@ -91,6 +85,13 @@ services:
       DOMAIN_NAME: {{ WP_SITE_URL }}
     networks:
       - {{ network_name }}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost/healthz || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
 
 volumes:
   {{ mariadb_volume }}:

@@ -48,7 +48,8 @@ app_services:
     files:
       - Dockerfile
       - entrypoint.sh
-      - nginx.conf
+      - nginx.bootstrap.conf
+      - nginx.production.conf
 
   - name: "{{ phpmyadmin_container }}"
     target_path: "{{ build_dir }}/{{ phpmyadmin_container }}"

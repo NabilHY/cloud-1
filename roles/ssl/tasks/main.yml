@@ -10,4 +10,19 @@
     - /var/lib/letsencrypt
     - /var/lib/letsencrypt/.well-known
     - /var/lib/letsencrypt/.well-known/acme-challenge
- 
+
+- name: Obtain Let's Encrypt certificate
+  ansible.builtin.command:
+    cmd: >
+      certbot certonly --webroot
+      -w {{ certbot_webroot }}
+      -d {{ certbot_domain }}
+      --email {{ certbot_email }}
+      --agree-tos
+      --non-interactive
+    creates: /etc/letsencrypt/live/{{ certbot_domain }}/fullchain.pem
+
+- name: Restart Nginx to enable TLS
+  community.docker.docker_container:
+    name: "{{ certbot_container_name }}"
+    restart: true
