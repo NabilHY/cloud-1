@@ -1,0 +1,5 @@
+certbot_domain: "ohio-cloud1.duckdns.org"
+certbot_email: "admin@example.com"
+certbot_webroot: "/var/lib/letsencrypt"
+certbot_continaer_name: "nginx"
+

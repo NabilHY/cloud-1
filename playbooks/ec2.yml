@@ -11,5 +11,6 @@
     - docker_install
     - docker_verify
     - compose
+    - ssl
     - smoke_test
     - cleanup
