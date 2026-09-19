@@ -1,31 +1,48 @@
+# ──────────────────────────────────────────────
+# General
+# ──────────────────────────────────────────────
 app_name: cloud-1
 
+# ──────────────────────────────────────────────
+# Paths
+# ──────────────────────────────────────────────
 compose_path: ../templates/docker-compose.yml.j2
-
+controller_path: ../files/
 build_dir: /opt/compose
-
 target_mariadb_path: /opt/compose/mariadb
 target_phpmyadmin_path: /opt/compose/phpmyadmin_container
 
-network_name: wp_network
-
-controller_path: ../files/
-
+# ──────────────────────────────────────────────
+# Container names
+# ──────────────────────────────────────────────
 mariadb_container: mariadb
-mariadb_image: mariadb
-mariadb_host_port: 3306
-mariadb_container_port: 3306
-
 phpmyadmin_container: phpmyadmin
 wordpress_container: wp
 nginx_container: nginx
 
+# ──────────────────────────────────────────────
+# Networking
+# ──────────────────────────────────────────────
+network_name: wp_network
+mariadb_host_port: 3306
+mariadb_container_port: 3306
+
+# ──────────────────────────────────────────────
+# Volumes
+# ──────────────────────────────────────────────
 mariadb_volume: mariadb_data
 wordpress_volume: wordpress_data
 
+# ──────────────────────────────────────────────
+# WordPress site config
+# ──────────────────────────────────────────────
 WP_SITE_TITLE: "cloud-1"
 WP_SITE_URL: ohio-cloud1.duckdns.org
 
+# ──────────────────────────────────────────────
+# Service build definitions
+# (used by setup.yml to copy files to targets)
+# ──────────────────────────────────────────────
 app_services:
   - name: "{{ mariadb_container }}"
     target_path: "{{ build_dir }}/{{ mariadb_container }}"

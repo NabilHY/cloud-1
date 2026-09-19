@@ -34,7 +34,7 @@ mv wp-cli.phar /usr/local/bin/wp
 
 wp --info
 
-wp core install \
+wp core is-installed || wp core install \
   --url="${WP_SITE_URL}" \
   --title="${WP_SITE_TITLE}" \
   --admin_user="${WP_ADMIN_USER}" \

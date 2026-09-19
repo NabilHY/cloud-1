@@ -6,7 +6,7 @@ mkdir -p /run/lighttpd
 
 cat >/var/www/localhost/htdocs/config.inc.php <<'EOF'
   <?php
-  $cfg['blowfish_secret'] = 'a8F3kLmQ9xRvTuWyNpZcBdEjHsIoGn01';
+  $cfg['blowfish_secret'] = getenv('PMA_BLOWFISH_SECRET');
   $i = 0;
   $i++;
   $cfg['Servers'][$i]['auth_type']       = 'cookie';

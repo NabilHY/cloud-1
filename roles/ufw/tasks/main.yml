@@ -11,11 +11,12 @@
     - { direction: 'incoming', default: 'deny' }
     - { direction: 'outgoing', default: 'allow' }
 
-- name: UFW - Allow outbound HTTP/HTTPS/DNS
+- name: UFW - Allow inbound HTTP/HTTPS
   community.general.ufw:
     rule: allow
     port: "{{ item }}"
-    direction: out
+    proto: tcp
+    direction: in
   loop:
     - "80"
     - "443"
@@ -29,4 +30,3 @@
 - name: UFW - Enable firewall
   community.general.ufw:
     state: enabled
-

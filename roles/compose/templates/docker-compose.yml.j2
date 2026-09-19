@@ -3,7 +3,7 @@ services:
     container_name: {{ mariadb_container }}
     build: {{ target_mariadb_path }}
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", root, -p{{ vault_mysql_root_password }}]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", root, "-p{{ vault_mysql_root_password }}"]
       timeout: 5s
       retries: 5
       interval: 10s
@@ -33,6 +33,7 @@ services:
         condition: service_healthy
     environment:
       PMA_HOST: {{ mariadb_container }}
+      BLOWFISH_SECRET: {{ vault_blowfish_secret }}
     networks:
       - {{ network_name }}
 
