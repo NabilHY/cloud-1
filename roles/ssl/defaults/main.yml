@@ -1,4 +1,4 @@
-certbot_domain: "ohio-cloud1.duckdns.org"
+certbot_domain: "{{ domain_name }}"
 certbot_email: "jhgctv@gmail.com"
 certbot_webroot: "/var/lib/letsencrypt"
 certbot_container_name: "nginx"

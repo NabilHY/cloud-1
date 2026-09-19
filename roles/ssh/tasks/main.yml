@@ -1,9 +1,10 @@
 - name: Write SSH key from Vault
   copy:
-    content: "{{ vault_ssh_private_key }}"
-    dest: "/tmp/ohio.pem"
+    content: "{{ hostvars[item].vault_ssh_private_key }}"
+    dest: "/tmp/{{ item }}.pem"
     mode: '0400'
   delegate_to: localhost
-  run_once: true
   become: false
-
+  loop: "{{ groups['all'] }}"
+  loop_control:
+    label: "{{ item }}"

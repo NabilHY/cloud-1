@@ -1,0 +1,35 @@
+provider "aws" {
+  region = "{{ terraform_info.aws_region }}"
+}
+
+data "aws_vpc" "selected" {
+  id = "{{ terraform_info.vpc_id }}"
+}
+
+data "aws_subnet" "selected" {
+  id = "{{ terraform_info.subnet_id }}"
+}
+
+data "aws_security_group" "selected" {
+  id = "{{ terraform_info.security_group_id }}"
+}
+
+resource "aws_eip_association" "eip_assoc" {
+  instance_id   = aws_instance.{{ terraform_info.instance_name }}-cloud1.id
+  allocation_id = "{{ terraform_info.eip_allocation_id }}"
+}
+
+resource "aws_instance" "{{ terraform_info.instance_name }}-cloud1" {
+  ami           = "{{ terraform_info.ami }}"
+  instance_type = "{{ terraform_info.instance_type }}"
+  subnet_id     = data.aws_subnet.selected.id
+  key_name      = "{{ terraform_info.key_name }}"
+
+  vpc_security_group_ids = [
+    data.aws_security_group.selected.id
+  ]
+
+  tags = {
+    Name = "{{ terraform_info.instance_name }}"
+  }
+}

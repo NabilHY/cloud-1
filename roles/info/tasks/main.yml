@@ -1,0 +1,6 @@
+- name: Display AWS Instance Specifications
+  ansible.builtin.debug:
+    msg: "{{ lookup('ansible.builtin.template', 'aws_banner.j2').split('\n') }}"
+  loop: "{{ groups['all'] }}"
+  loop_control:
+    label: "{{ item }}"

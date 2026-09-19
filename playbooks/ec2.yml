@@ -1,5 +1,5 @@
 - name: EC2 provisioning (infra, firewall, Docker, deploy)
-  hosts: ec2-vm
+  hosts: all
   become: true
   gather_facts: true
   collections:

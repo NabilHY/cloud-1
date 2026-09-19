@@ -1,7 +1,9 @@
 - name: Clean up decrypted Key
   ansible.builtin.file:
-    path: "/tmp/ohio.pem"
+    path: "/tmp/{{ item }}.pem"
     state: absent
   delegate_to: localhost
-  run_once: true
   become: false
+  loop: "{{ groups['all'] }}"
+  loop_control:
+    label: "{{ item }}"

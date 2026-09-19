@@ -1,13 +1,14 @@
-- name: Local setup (banner, SSH, Terraform)
+- name: Local setup (banner, SSH)
   hosts: localhost
   gather_facts: false
   connection: local
-  vars_files:
-    - vars/aws_specs.yml
-  pre_tasks:
-    - name: Print AWS Instance Specifications
-      ansible.builtin.debug:
-        msg: "{{ aws_banner.split('\n') }}"
   roles:
+    - info
     - ssh
+
+- name: Provision EC2 with Terraform
+  hosts: all
+  gather_facts: false
+  connection: local
+  roles:
     - terraform

@@ -33,4 +33,3 @@ resource "aws_instance" "ohio-cloud1" {
     Name = "ohio"
   }
 }
-

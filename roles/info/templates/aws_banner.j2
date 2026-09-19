@@ -1,0 +1,13 @@
+=======================================
+AWS Instance Specifications: {{ item }}
+=======================================
+Name Tag:          {{ hostvars[item].terraform_info.instance_name }}
+Region:            {{ hostvars[item].terraform_info.aws_region }}
+Instance Type:     {{ hostvars[item].terraform_info.instance_type }}
+AMI ID:            {{ hostvars[item].terraform_info.ami }}
+Key Pair:          {{ hostvars[item].terraform_info.key_name }}
+VPC ID:            {{ hostvars[item].terraform_info.vpc_id }}
+Subnet ID:         {{ hostvars[item].terraform_info.subnet_id }}
+Security Group ID: {{ hostvars[item].terraform_info.security_group_id }}
+Elastic IP Alloc:  {{ hostvars[item].terraform_info.eip_allocation_id }}
+=======================================

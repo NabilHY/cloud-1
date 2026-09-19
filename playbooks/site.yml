@@ -1,7 +1,7 @@
 - import_playbook: local.yml
 
 - name: Wait for EC2 instance to become reachable
-  hosts: ec2-vm
+  hosts: all
   gather_facts: false
   tasks:
     - name: Grace period – wait for SSH to be ready
