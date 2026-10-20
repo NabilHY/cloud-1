@@ -5,7 +5,6 @@
   roles:
     - info
     - ssh
-
 - name: Provision EC2 with Terraform
   hosts: all
   gather_facts: false
